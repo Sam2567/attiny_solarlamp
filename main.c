@@ -8,21 +8,8 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include "config.h"
 
-#define N_1    (_BV(CS00))
-#define N_8    (_BV(CS01))
-#define N_64   (_BV(CS01)|_BV(CS00))
-#define N_256  (_BV(CS02))
-#define N_1024 (_BV(CS02)|_BV(CS00))
-#define F_PWM (_BV(WGM01)|_BV(WGM00)|_BV(WGM02))
-#define CTC (_BV(WGM01))
-#define ADC_3 (_BV(MUX1)|_BV(MUX0))
-#define S_2 _BV(ADPS0)
-#define S_4 _BV(ADPS1)
-#define S_8 (_BV(ADPS1)|_BV(ADPS0)
-#define S_16 _BV(ADPS2)
-#define S_128 (_BV(ADPS2)|_BV(ADPS1)|_BV(ADPS0))
-#define F_CPU 960000
 #define sw1 ~PINB & 0x04
 
 
@@ -56,14 +43,7 @@ uint32_t ADC_Read()
 	return Ain;
 }
 
-/* When timer is set to Fast PWM Mode, the freqency can be
-calculated using equation: F = F_CPU / (N * 256) 
 
- -> F(N_1) = 4.687kHz
- -> F(N_8) = 585Hz
- -> F(N_64) = 73Hz
- -> F(N_256) = 18Hz
- -> F(N_1024) = 4Hz */
 static void pwm_set_frequency(uint32_t N)
 {
     TCCR0B = (TCCR0B & ~((1<<CS02)|(1<<CS01)|(1<<CS00))) | N; // set prescaler
