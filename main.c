@@ -64,16 +64,19 @@ int main(void)
 {
 	DDRB &=~(1 << 2);
 	PORTB|=(1 << 2);
+	DDRB|=(1 << 4);
     /* setup */
-    pwm_init();
-    pwm_set_frequency(N_1);
 	ADC_init();
     /* loop */
    while (1)
    {
 	   uint32_t reading = ADC_Read();
-	   
-	   pwm_set_duty(map(reading, 0, 1023, 0, 255));
+	   uint32_t map_value = map(reading, 0, 1023, 0, 255);
+	   if(map_value < 170){
+		   PORTB |=(1 << 4);
+	   }else{
+		   PORTB &=~(1 << 4);
+	   }
 	   _delay_ms(1);
    }
 }
